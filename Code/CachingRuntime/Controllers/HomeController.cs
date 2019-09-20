@@ -17,6 +17,22 @@ namespace CachingRuntime.Controllers
             return View(data);
         }
 
+        public ActionResult ClearCaching()
+        {
+
+            if (clearALlcaching() == true)
+            {
+                ViewBag.Result = "Xóa cached thành công!!";
+            }
+            else
+            {
+                ViewBag.Result = "Lỗi! Xóa cached !!";
+
+            }
+
+            return View();
+        }
+
 
         public List<Category> GetCategories(string AppAlias)
         {
@@ -52,6 +68,38 @@ namespace CachingRuntime.Controllers
             }
             return result;
         }
+
+
+
+        public void Remove(string cacheKey)
+        {
+            var lstCaches = MemoryCache.Default.Where(x => x.Key.ToLower().Contains(cacheKey.ToLower())).ToList();
+            for (int i = 0; i < lstCaches.Count; i++)
+                MemoryCache.Default.Remove(lstCaches[i].Key);
+        }
+
+        public bool clearALlcaching()
+        {
+            bool result = false;
+
+            var Appalias = this.AppID;
+
+
+            try
+            {
+                Remove(Appalias + "MemoryCache_GetCategories");
+            
+
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return result;
+        }
+
 
 
     }
